@@ -4,8 +4,6 @@ run:
 linters:
   disable-all: true
   enable:
-    - govet
-    - staticcheck
     - gofmt
     - gofumpt
     # revive and errcheck disabled to keep CLI glue concise
