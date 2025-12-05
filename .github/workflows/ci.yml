@@ -34,8 +34,12 @@ jobs:
 
       - name: Format check (gofumpt)
         run: |
-          gofumpt -w .
-          git diff --exit-code
+          # list files that would change
+          CHANGED=$(gofumpt -l .)
+          if [ -n "$CHANGED" ]; then
+            echo "gofumpt would reformat:\n$CHANGED" >&2
+            exit 1
+          fi
 
       - name: Lint
         run: golangci-lint run ./...
