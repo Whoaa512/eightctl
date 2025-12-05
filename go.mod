@@ -1,6 +1,6 @@
 module github.com/steipete/eightctl
 
-go 1.22.9
+go 1.24.2
 
 require (
 	github.com/charmbracelet/log v0.4.2
