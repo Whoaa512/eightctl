@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/charmbracelet/log"
@@ -118,19 +119,17 @@ func (c *Client) EnsureDeviceID(ctx context.Context) (string, error) {
 }
 
 func (c *Client) authTokenEndpoint(ctx context.Context) error {
-	payload := map[string]string{
-		"grant_type":    "password",
-		"username":      c.Email,
-		"password":      c.Password,
-		"client_id":     "sleep-client",
-		"client_secret": "",
-	}
-	body, _ := json.Marshal(payload)
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, authURL, bytes.NewReader(body))
+	data := url.Values{}
+	data.Set("grant_type", "password")
+	data.Set("username", c.Email)
+	data.Set("password", c.Password)
+	data.Set("client_id", c.ClientID)
+	data.Set("client_secret", c.ClientSecret)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, authURL, strings.NewReader(data.Encode()))
 	if err != nil {
 		return err
 	}
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := c.HTTP.Do(req)
 	if err != nil {
